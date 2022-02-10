@@ -1,0 +1,6 @@
+# HaruRobo2019ROS
+関東春ロボコン2021で使用したROSのプログラム群。
+空のcatkin_wsにsrcをコピペして、catkin_makeします。
+初回のcatkin_makeは必ず失敗し、2回目からはビルドが成功します。
+Terminalを開き「roslaunch kantoharu20_3wheel 20harurobo_shudo.launch」を入力すれば、プログラムが起動します。
+最初にアップしたmainはubuntu20.04でエラーが出たので、手直ししたver_1.01をblanchからダウンロードしてください。

@@ -2,17 +2,17 @@ cmake_minimum_required(VERSION 3.0.2)
 project(harurobo2022)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-add_compile_options(-std=c++17)
+add_compile_options(-std=c++2a -g -O3 -Wall -pedantic-errors)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-  rospy
   std_msgs
   geometry_msgs
   message_generation
+  can_plugins
 )
 
 ## System dependencies are found with CMake's conventions
@@ -51,7 +51,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  can_msgs/CanFrame.msg
+  Odometry.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -105,9 +105,9 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES harurobo2022
-CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs message_runtime
+  INCLUDE_DIRS include
+  LIBRARIES harurobo2022
+  CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs message_runtime
 #  DEPENDS system_lib
 )
 
@@ -121,6 +121,8 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
 )
+
+# 基本ヘッダーオンリー。
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
@@ -136,18 +138,30 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/harurobo2022_node.cpp)
-add_executable(manual_command
-  src/manual_command.cpp)
-  
+
+# add_executable(auto_commander
+#   src/auto_commander.cpp
+# )
+
+add_executable(manual_commander
+  src/manual_commander_node.cpp
+)
+
 add_executable(under_carriage_4wheel
-  src/under_carriage_4wheel.cpp
+  src/under_carriage_4wheel_node.cpp
 )
 
-add_executable(hoge
-  src/hoge.cpp
+add_executable(can_subscriber
+  src/can_subscriber_node.cpp
 )
 
+add_executable(emergency_controller
+  src/emergency_controller_node.cpp
+)
 
+add_executable(state_manager
+  src/state_manager_node.cpp
+)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -163,15 +177,28 @@ add_executable(hoge
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
+
+# target_link_libraries(auto_commander
+#   ${catkin_LIBRARIES}
+# )
+
+target_link_libraries(manual_commander
+  ${catkin_LIBRARIES}
+)
+
 target_link_libraries(under_carriage_4wheel
   ${catkin_LIBRARIES}
 )
 
-target_link_libraries(hoge
+target_link_libraries(can_subscriber
   ${catkin_LIBRARIES}
 )
 
-target_link_libraries(manual_command
+target_link_libraries(emergency_controller
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(state_manager
   ${catkin_LIBRARIES}
 )
 
